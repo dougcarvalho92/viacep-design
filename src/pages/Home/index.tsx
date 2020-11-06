@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Main, LandingContainer, Location, ContentWrapper } from "./styles";
+import { Main, LandingContainer, Location, ContentWrapper, SeachContainer } from "./styles";
 import InputMask from "react-input-mask";
 import api from "../../services/api";
 import useDebounce from "../../hooks/useDebounce";
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
         <Main>
           <h1>Busque os dados do seu CEP</h1>
           <p>Basta digitar o valor no campo abaixo.</p>
-          <div className="search-container">
+          <SeachContainer>
             <InputMask
               mask="99999-999"
               onChange={(e) => handleChangeCEP(e.target.value)}
@@ -96,7 +96,7 @@ const Home: React.FC = () => {
               <option value="json">JSON</option>
               <option value="xml">XML</option>
             </select>
-          </div>
+          </SeachContainer>
         </Main>
 
         <Location lang="json">

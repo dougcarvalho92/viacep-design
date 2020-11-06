@@ -39,7 +39,11 @@ export const Main = styled.div`
     font-size: 18px;
     line-height: 22px;
   }
-
+`;
+export const SeachContainer = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 10px;
   input,
   select {
     background: #f5f8fa;
@@ -51,7 +55,6 @@ export const Main = styled.div`
     border-radius: 16px;
   }
 `;
-
 export const Location = styled.pre`
   position: relative;
   margin-top: 20px;
@@ -76,5 +79,12 @@ export const Location = styled.pre`
   code {
     white-space: pre-wrap;
     width: 100%;
+  }
+  @media (max-width: 667px) {
+    p {
+      font-size: 14px;
+      line-height: 22px;
+      white-space: pre-wrap;
+    }
   }
 `;
