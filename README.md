@@ -20,7 +20,7 @@ yarn
 
 
 ## 2 - Projeto online
-Acesse - [https://teste-vx-comunicacao.netlify.app/#/](https://teste-vx-comunicacao.netlify.app/#/)
+Acesse - [#](#)
 
 Dados fornecidos pela API [viacep](https://viacep.com.br/)
 
