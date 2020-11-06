@@ -39,6 +39,13 @@ export const Main = styled.div`
     font-size: 18px;
     line-height: 22px;
   }
+  @media (max-width: 667px) {
+    h1 {
+      font-size: 2rem;
+      line-height: 36px;
+      text-align: center;
+    }
+  }
 `;
 export const SeachContainer = styled.div`
   display: grid;
