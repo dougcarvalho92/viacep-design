@@ -28,7 +28,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     async function searchCEP() {
       await api
-        .get(`${cep}/${dataType}`)
+        .get(`${cepSearch}/${dataType}`)
         .then((response) => response.data)
         .then((result) => {
           setCepDataInformation(result);
