@@ -54,7 +54,7 @@ const Home: React.FC = () => {
       return myJsonString
         .split(",")
         .map((item, index) => (
-          <p> {item + (index < myJsonString.length - 1? "," : "")}</p>
+          <p> {item + (index < myJsonString.length - 1 ? "," : "")}</p>
         ));
     }
     return cepDataInformation;
@@ -78,8 +78,8 @@ const Home: React.FC = () => {
             >
               <option value="json">json</option>
               <option value="xml">xml</option>
-              <option value="piped">piped</option>
-              <option value="querty">querty</option>
+              {/* <option value="piped">piped</option>
+              <option value="querty">querty</option> */}
             </select>
           </div>
         </Main>

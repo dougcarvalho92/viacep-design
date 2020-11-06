@@ -64,16 +64,9 @@ export const Location = styled.pre`
   outline: none;
   color: #5c8599;
   position: relative;
-  pre { overflow-x: auto; }
-  /* ::before {
-    content: "{";
-  }
-  ::after {
-    content: "}";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  } */
+  padding: 20px;
+  pre { overflow-x: auto;
+
   & strong {
     font-weight: 800;
   }
