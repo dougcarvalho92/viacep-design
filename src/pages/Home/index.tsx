@@ -3,6 +3,7 @@ import { Main, LandingContainer, Location, ContentWrapper } from "./styles";
 import InputMask from "react-input-mask";
 import api from "../../services/api";
 import useDebounce from "../../hooks/useDebounce";
+import Loading from "../../component/Loading";
 
 interface JSONTypeProps {
   cep: string;
@@ -24,14 +25,17 @@ const Home: React.FC = () => {
   const [cepDataInformation, setCepDataInformation] = useState<
     JSONTypeProps | string
   >();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function searchCEP() {
+      setLoading(true);
       await api
         .get(`${cepSearch}/${dataType}`)
         .then((response) => response.data)
         .then((result) => {
           setCepDataInformation(result);
+          setLoading(false);
         });
     }
     if (cepSearch) {
@@ -85,7 +89,7 @@ const Home: React.FC = () => {
         </Main>
 
         <Location lang="json">
-          <code>{formattingCode()}</code>
+          {loading ? <Loading /> : formattingCode()}
         </Location>
       </ContentWrapper>
     </LandingContainer>

@@ -53,6 +53,7 @@ export const Main = styled.div`
 `;
 
 export const Location = styled.pre`
+  position: relative;
   margin-top: 20px;
   font-size: 18px;
   line-height: 34px;
@@ -65,7 +66,9 @@ export const Location = styled.pre`
   color: #5c8599;
   position: relative;
   padding: 20px;
-  pre { overflow-x: auto;
+  pre {
+    overflow-x: auto;
+  }
 
   & strong {
     font-weight: 800;
