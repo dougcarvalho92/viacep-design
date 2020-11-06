@@ -34,8 +34,18 @@ const Home: React.FC = () => {
         .get(`${cepSearch}/${dataType}`)
         .then((response) => response.data)
         .then((result) => {
-          setCepDataInformation(result);
+          console.log(result);
+          if (result.error === true) {
+            throw new Error(result);
+            setCepDataInformation("");
+          }
+          if(result.erro !== true){
+            setCepDataInformation(result);
+          }
           setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
         });
     }
     if (cepSearch) {
@@ -51,6 +61,9 @@ const Home: React.FC = () => {
     setDataType(value);
   };
   const formattingCode = () => {
+    if(!cepDataInformation){
+      return "CEP não encontrado!"
+    }
     if (typeof cepDataInformation == "object") {
       var myJsonString = JSON.stringify(cepDataInformation);
       myJsonString = myJsonString.replace("{", "");
@@ -80,10 +93,8 @@ const Home: React.FC = () => {
               name="datatype"
               onChange={(e) => handleChangeDataType(e.target.value)}
             >
-              <option value="json">json</option>
-              <option value="xml">xml</option>
-              {/* <option value="piped">piped</option>
-              <option value="querty">querty</option> */}
+              <option value="json">JSON</option>
+              <option value="xml">XML</option>
             </select>
           </div>
         </Main>
