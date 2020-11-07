@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Main, LandingContainer, Location, ContentWrapper, SeachContainer } from "./styles";
+import {
+  Main,
+  LandingContainer,
+  Location,
+  ContentWrapper,
+  SearchContainer,
+} from "./styles";
 import InputMask from "react-input-mask";
 import api from "../../services/api";
 import useDebounce from "../../hooks/useDebounce";
@@ -26,33 +32,47 @@ const Home: React.FC = () => {
     JSONTypeProps | string
   >();
   const [loading, setLoading] = useState(false);
+  const [dataView, setDataView] = useState<string[]>([]);
 
   useEffect(() => {
     async function searchCEP() {
       setLoading(true);
-      await api
-        .get(`${cepSearch}/${dataType}`)
-        .then((response) => response.data)
-        .then((result) => {
- 
-          if (result.error === true) {
-            setCepDataInformation("");
-            throw new Error(result);
-         
-          }
-          if(result.erro !== true){
-            setCepDataInformation(result);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      try {
+        if (cepSearch.length === 8) {
+          await api
+            .get(`${cepSearch}/${dataType}`)
+            .then((response) => response.data)
+            .then((result) => {
+              if (result.erro === true) {
+                throw new Error("CEP não encontrado");
+              }
+              setCepDataInformation(result);
+              setLoading(false);
+            });
+        } else {
+          throw new Error("CEP inválido");
+        }
+      } catch (error) {
+        setDataView([error.message]);
+        setLoading(false);
+      }
     }
     if (cepSearch) {
       searchCEP();
     }
   }, [cepSearch, dataType]);
+
+  useEffect(() => {
+    if (cepDataInformation === "") {
+      setDataView([]);
+    } else if (typeof cepDataInformation == "object") {
+      var myJsonString = JSON.stringify(cepDataInformation);
+      myJsonString = myJsonString.replace("{", "");
+      myJsonString = myJsonString.replace("}", "");
+      const data = myJsonString.split(",");
+      setDataView(data);
+    }
+  }, [cepDataInformation]);
 
   const handleChangeCEP = (value: string) => {
     const cleanCEp = value.replace(/[^0-9]+/g, "");
@@ -61,29 +81,14 @@ const Home: React.FC = () => {
   const handleChangeDataType = (value: string) => {
     setDataType(value);
   };
-  const formattingCode = () => {
-    if(!cepDataInformation){
-      return "CEP não encontrado!"
-    }
-    if (typeof cepDataInformation == "object") {
-      var myJsonString = JSON.stringify(cepDataInformation);
-      myJsonString = myJsonString.replace("{", "");
-      myJsonString = myJsonString.replace("}", "");
-      return myJsonString
-        .split(",")
-        .map((item, index) => (
-          <p> {item + (index < myJsonString.length - 1 ? "," : "")}</p>
-        ));
-    }
-    return cepDataInformation;
-  };
+
   return (
     <LandingContainer>
       <ContentWrapper>
         <Main>
           <h1>Busque os dados do seu CEP</h1>
           <p>Basta digitar o valor no campo abaixo.</p>
-          <SeachContainer>
+          <SearchContainer>
             <InputMask
               mask="99999-999"
               onChange={(e) => handleChangeCEP(e.target.value)}
@@ -97,11 +102,20 @@ const Home: React.FC = () => {
               <option value="json">JSON</option>
               <option value="xml">XML</option>
             </select>
-          </SeachContainer>
+          </SearchContainer>
         </Main>
 
         <Location lang="json">
-          {loading ? <Loading /> : formattingCode()}
+          {loading ? (
+            <Loading />
+          ) : (
+            dataView.map((item, index) => (
+              <p key={index}>
+                {" "}
+                {item + (index < dataView.length - 1 ? "," : "")}
+              </p>
+            ))
+          )}
         </Location>
       </ContentWrapper>
     </LandingContainer>

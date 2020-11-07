@@ -47,7 +47,7 @@ export const Main = styled.div`
     }
   }
 `;
-export const SeachContainer = styled.div`
+export const SearchContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 10px;
@@ -60,6 +60,7 @@ export const SeachContainer = styled.div`
     height: 64px;
     padding: 0 16px;
     border-radius: 16px;
+    width: 100%;
   }
 `;
 export const Location = styled.pre`
@@ -76,6 +77,7 @@ export const Location = styled.pre`
   color: #5c8599;
   position: relative;
   padding: 20px;
+  border-radius: 16px;
   pre {
     overflow-x: auto;
   }
