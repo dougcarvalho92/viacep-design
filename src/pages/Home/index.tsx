@@ -34,10 +34,11 @@ const Home: React.FC = () => {
         .get(`${cepSearch}/${dataType}`)
         .then((response) => response.data)
         .then((result) => {
-          console.log(result);
+ 
           if (result.error === true) {
-            throw new Error(result);
             setCepDataInformation("");
+            throw new Error(result);
+         
           }
           if(result.erro !== true){
             setCepDataInformation(result);
