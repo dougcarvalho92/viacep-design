@@ -53,16 +53,19 @@ export const SearchContainer = styled.div`
   grid-gap: 10px;
   input,
   select {
-    background: #f5f8fa;
-    border: 1px solid #d3e2e5;
+    background: rgb(245, 248, 250);
+    border: 1px solid rgb(211, 226, 229);
     outline: none;
-    color: #5c8599;
-    height: 64px;
-    padding: 0 16px;
-    border-radius: 16px;
+    color: rgb(92, 133, 153);
+    height: 50px;
+    padding: 0px 6px;
+    border-radius: 10px;
     width: 100%;
   }
 `;
+
+
+
 export const Location = styled.pre`
   position: relative;
   margin-top: 20px;
