@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Main,
   LandingContainer,
-  Location,
+  Code,
   ContentWrapper,
   SearchContainer,
 } from "./styles";
@@ -65,12 +65,19 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (cepDataInformation === "") {
       setDataView([]);
-    } else if (typeof cepDataInformation == "object") {
-      var myJsonString = JSON.stringify(cepDataInformation);
-      myJsonString = myJsonString.replace("{", "");
-      myJsonString = myJsonString.replace("}", "");
-      const data = myJsonString.split(",");
-      setDataView(data);
+    } else {
+      switch (typeof cepDataInformation) {
+        case "object":
+          var myJsonString = JSON.stringify(cepDataInformation);
+          myJsonString = myJsonString.replace("{", "");
+          myJsonString = myJsonString.replace("}", "");
+          const data = myJsonString.split(",");
+          setDataView(data);
+          break;
+        case "string":
+          setDataView([cepDataInformation.toString()]);
+          break;
+      }
     }
   }, [cepDataInformation]);
 
@@ -105,18 +112,17 @@ const Home: React.FC = () => {
           </SearchContainer>
         </Main>
 
-        <Location lang="json">
+        <Code lang="json">
           {loading ? (
             <Loading />
           ) : (
             dataView.map((item, index) => (
               <p key={index}>
-                {" "}
                 {item + (index < dataView.length - 1 ? "," : "")}
               </p>
             ))
           )}
-        </Location>
+        </Code>
       </ContentWrapper>
     </LandingContainer>
   );

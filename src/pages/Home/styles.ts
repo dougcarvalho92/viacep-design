@@ -9,7 +9,6 @@ export const LandingContainer = styled.div`
   align-items: center;
   padding: 30px;
 `;
-
 export const ContentWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -21,7 +20,6 @@ export const ContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
 export const Main = styled.div`
   display: flex;
   flex-direction: column;
@@ -63,24 +61,28 @@ export const SearchContainer = styled.div`
     width: 100%;
   }
 `;
-
-
-
-export const Location = styled.pre`
+export const Code = styled.pre`
   position: relative;
   margin-top: 20px;
-  font-size: 18px;
-  line-height: 34px;
+
   min-height: 300px;
   width: 100%;
   flex-wrap: wrap;
-  background: #f5f8fa;
-  border: 1px solid #d3e2e5;
-  outline: none;
-  color: #5c8599;
-  position: relative;
-  padding: 20px;
-  border-radius: 16px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-left: 3px solid rgb(92, 133, 153);
+  color: #666;
+  page-break-inside: avoid;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+  word-wrap: break-word;
+
   pre {
     overflow-x: auto;
   }
