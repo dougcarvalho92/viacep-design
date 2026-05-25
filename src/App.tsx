@@ -1,8 +1,13 @@
 import React from "react";
-import Home from "./pages/Home";
+import Home from "@/pages/Home";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const App: React.FC = () => {
-  return <Home />;
+  return (
+    <ErrorBoundary>
+      <Home />
+    </ErrorBoundary>
+  );
 };
 
 export default App;

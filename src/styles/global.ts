@@ -1,4 +1,3 @@
-// globalStyles.js
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -10,16 +9,15 @@ const GlobalStyle = createGlobalStyle`
 body {
   color: #fff;
   background: #ebf2f5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-body,
-input,
-input,
-textarea {
+body, input, textarea {
   font: 600 18px Nunito, sans-serif;
 }
-a{
+a {
   text-decoration: none;
-  color:#8fa7b3;
+  color: #8fa7b3;
 }
 `;
 

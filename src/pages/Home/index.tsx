@@ -1,92 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Main,
   LandingContainer,
   Code,
   ContentWrapper,
   SearchContainer,
+  EmptyState,
+  ErrorMessage,
+  CopyButton,
+  HistoryContainer,
+  HistoryHeader,
+  ClearButton,
+  HistoryItem,
 } from "./styles";
-import InputMask from "react-input-mask";
-import api from "../../services/api";
-import useDebounce from "../../hooks/useDebounce";
-import Loading from "../../component/Loading";
-
-interface JSONTypeProps {
-  cep: string;
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  localidade: string;
-  uf: string;
-  ibge: string;
-  gia: string;
-  ddd: string;
-  siafi: string;
-}
+import CepInput from "@/components/CepInput";
+import Loading from "@/components/Loading";
+import { useCep, CepData, DataType } from "@/hooks/useCep";
+import { formatAddress, FormatType } from "@/utils/format";
 
 const Home: React.FC = () => {
-  const [cep, setCep] = useState("");
-  const cepSearch = useDebounce(cep, 1000);
-  const [dataType, setDataType] = useState("json");
-  const [cepDataInformation, setCepDataInformation] = useState<
-    JSONTypeProps | string
-  >();
-  const [loading, setLoading] = useState(false);
-  const [dataView, setDataView] = useState<string[]>([]);
+  const {
+    rawCep, setRawCep, dataType, setDataType,
+    result, status, error,
+    history, clearHistory, searchFromHistory,
+  } = useCep();
 
-  useEffect(() => {
-    async function searchCEP() {
-      setLoading(true);
-      try {
-        if (cepSearch.length === 8) {
-          await api
-            .get(`${cepSearch}/${dataType}`)
-            .then((response) => response.data)
-            .then((result) => {
-              if (result.erro === true) {
-                throw new Error("CEP não encontrado");
-              }
-              setCepDataInformation(result);
-              setLoading(false);
-            });
-        } else {
-          throw new Error("CEP inválido");
-        }
-      } catch (error) {
-        setDataView([error.message]);
-        setLoading(false);
-      }
-    }
-    if (cepSearch) {
-      searchCEP();
-    }
-  }, [cepSearch, dataType]);
+  const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    if (cepDataInformation === "") {
-      setDataView([]);
-    } else {
-      switch (typeof cepDataInformation) {
-        case "object":
-          var myJsonString = JSON.stringify(cepDataInformation);
-          myJsonString = myJsonString.replace("{", "");
-          myJsonString = myJsonString.replace("}", "");
-          const data = myJsonString.split(",");
-          setDataView(data);
-          break;
-        case "string":
-          setDataView([cepDataInformation.toString()]);
-          break;
-      }
-    }
-  }, [cepDataInformation]);
+  const displayFormat: FormatType =
+    dataType === "endereco" ? "address" : dataType;
 
-  const handleChangeCEP = (value: string) => {
-    const cleanCEp = value.replace(/[^0-9]+/g, "");
-    setCep(cleanCEp);
+  const displayText = result ? formatAddress(result, displayFormat) : "";
+  const displayLines = displayText ? displayText.split("\n") : [];
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(displayText);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = displayText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
-  const handleChangeDataType = (value: string) => {
-    setDataType(value);
+
+  const renderResult = () => {
+    switch (status) {
+      case "idle":
+        return <EmptyState>Digite um CEP para começar</EmptyState>;
+      case "loading":
+        return <Loading />;
+      case "error":
+        return <ErrorMessage>{error}</ErrorMessage>;
+      case "success":
+        return (
+          <>
+            <CopyButton onClick={handleCopy}>
+              {copied ? "Copiado!" : "Copiar"}
+            </CopyButton>
+            {displayLines.map((line, i) => (
+              <p key={i}>{line}</p>
+            ))}
+          </>
+        );
+    }
   };
 
   return (
@@ -94,35 +75,42 @@ const Home: React.FC = () => {
       <ContentWrapper>
         <Main>
           <h1>Busque os dados do seu CEP</h1>
-          <p>Basta digitar o valor no campo abaixo.</p>
+          <p>Digite o CEP no campo abaixo para consultar.</p>
           <SearchContainer>
-            <InputMask
+            <CepInput
               mask="99999-999"
-              onChange={(e) => handleChangeCEP(e.target.value)}
-              value={cep}
-              alwaysShowMask={true}
+              onChange={(e) => setRawCep(e.target.value)}
+              value={rawCep}
+              placeholder="Ex: 01001-000"
             />
             <select
-              name="datatype"
-              onChange={(e) => handleChangeDataType(e.target.value)}
+              value={dataType}
+              onChange={(e) => setDataType(e.target.value as DataType)}
             >
               <option value="json">JSON</option>
               <option value="xml">XML</option>
+              <option value="endereco">Endereço</option>
             </select>
           </SearchContainer>
         </Main>
 
-        <Code lang="json">
-          {loading ? (
-            <Loading />
-          ) : (
-            dataView.map((item, index) => (
-              <p key={index}>
-                {item + (index < dataView.length - 1 ? "," : "")}
-              </p>
-            ))
-          )}
-        </Code>
+        <Code>{renderResult()}</Code>
+
+        {history.length > 0 && (
+          <HistoryContainer>
+            <HistoryHeader>
+              <span>&#128337;</span>
+              <span>Histórico</span>
+              <ClearButton onClick={clearHistory}>Limpar</ClearButton>
+            </HistoryHeader>
+            {history.map((item: CepData) => (
+              <HistoryItem key={item.cep} onClick={() => searchFromHistory(item)}>
+                <strong>{item.cep}</strong> — {item.logradouro},{" "}
+                {item.bairro}, {item.localidade}/{item.uf}
+              </HistoryItem>
+            ))}
+          </HistoryContainer>
+        )}
       </ContentWrapper>
     </LandingContainer>
   );
