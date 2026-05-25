@@ -26,8 +26,7 @@ export function formatAddress(
       if (cityLine) parts.push(cityLine);
 
       if (data.cep) {
-        const masked = `${data.cep.slice(0, 5)}-${data.cep.slice(5)}`;
-        parts.push(masked);
+        parts.push(data.cep);
       }
 
       return parts.join(", ");
